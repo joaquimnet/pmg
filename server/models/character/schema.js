@@ -2,7 +2,6 @@ const merge = require('deepmerge');
 const { SchemaTypes } = require('mongoose');
 
 const entitySchema = require('../entity/schema');
-const { PermissionGroup } = require('./enums');
 
 const IntergerStartingAtZero = {
   type: Number,
@@ -12,19 +11,7 @@ const IntergerStartingAtZero = {
   default: 0,
 };
 
-const userSchema = {
-  discordId: {
-    type: String,
-    required: true,
-    index: true,
-    unique: true,
-  },
-  permissionGroup: {
-    type: String,
-    enum: PermissionGroup.toArray(),
-    default: PermissionGroup.USER,
-    required: true,
-  },
+const characterSchema = {
   level: {
     ...IntergerStartingAtZero,
     min: 1,
@@ -172,4 +159,4 @@ const userSchema = {
   },
 };
 
-module.exports = merge(entitySchema, userSchema);
+module.exports = merge(entitySchema, characterSchema);

@@ -17,6 +17,10 @@ class Enum {
     return Object.values(this._items);
   }
 
+  toString() {
+    return this.toArray().toString();
+  }
+
   toObject() {
     return { ...this._items };
   }
