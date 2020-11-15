@@ -1,0 +1,85 @@
+const { {{properCase name}} } = require('../../models');
+
+module.exports = {
+  name: '{{name}}',
+  routes: {
+    'GET /{{name}}/:id': 'get{{properCase name}}',
+    'POST /{{name}}': 'post{{properCase name}}',
+    'PATCH /{{name}}/:id': 'patch{{properCase name}}',
+    'DELETE /{{name}}/:id': 'delete{{properCase name}}',
+  },
+  actions: {
+    get{{properCase name}}: {
+      params: {
+        id: 'string',
+        $$strict: true,
+      },
+      async handler(req, res) {
+        const params = { ...req.body, ...req.query, ...req.params };
+
+        const {{name}} = await {{properCase name}}.findById(params.id);
+        if (!{{name}}) {
+          return res.status(404).json({ message: '{{properCase name}} not found' });
+        }
+
+        return res.json({{name}}.safe());
+      },
+    },
+    post{{properCase name}}: {
+      params: {
+        name: { type: 'string', min: 2 },
+        description: { type: 'string', min: 2 },
+        $$strict: true,
+      },
+      async handler(req, res) {
+        const params = { ...req.body, ...req.query, ...req.params };
+
+        const {{name}} = new {{properCase name}}({
+          name: params.name,
+          description: params.description,
+        });
+
+        await {{name}}.save();
+
+        return res.json({{name}}.safe());
+      },
+    },
+    patch{{properCase name}}: {
+      params: {
+        id: 'string',
+        name: { type: 'string', min: 2, optional: true },
+        description: { type: 'string', min: 2, optional: true },
+        $$strict: true,
+      },
+      async handler(req, res) {
+        const params = { ...req.body, ...req.query, ...req.params };
+
+        const {{name}} = await {{properCase name}}.findById(params.id);
+        if (!{{name}}) {
+          return res.status(404).json({ message: '{{properCase name}} not found' });
+        }
+
+        if (params.name || params.description) {
+          if (params.name) {{name}}.name = params.name;
+          if (params.description) {{name}}.description = params.description;
+          await {{name}}.save();
+        }
+
+        return res.json({{name}}.safe());
+      },
+    },
+    delete{{properCase name}}: {
+      params: {
+        id: 'string',
+        $$strict: true,
+      },
+      async handler(req, res) {
+        const params = { ...req.body, ...req.query, ...req.params };
+
+        await {{properCase name}}.deleteOne({ _id: params.id });
+
+        return res.status(204).end();
+      },
+    },
+  },
+};

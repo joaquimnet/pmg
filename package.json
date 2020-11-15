@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "plop": "plop"
   },
   "dependencies": {
     "bcrypt": "^5.0.0",
@@ -26,6 +27,8 @@
   },
   "devDependencies": {
     "eslint": "^7.6.0",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "plop": "^2.7.4",
+    "yargs": "next"
   }
 }

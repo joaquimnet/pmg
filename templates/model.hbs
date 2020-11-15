@@ -1,0 +1,19 @@
+module.exports = {
+  name: '{{name}}',
+  schema: {
+    name: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+  },
+  methods: {
+    safe() {
+      const {{name}} = this.toObject();
+      return {{name}};
+    },
+  },
+};

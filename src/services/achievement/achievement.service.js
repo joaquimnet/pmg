@@ -62,7 +62,7 @@ module.exports = {
           return res.status(404).json({ message: 'Achievement not found' });
         }
 
-        if (params.name || params.category) {
+        if (params.name || params.description || params.category) {
           if (params.name) achievement.name = params.name;
           if (params.description) achievement.description = params.description;
           if (params.category) achievement.category = params.category;

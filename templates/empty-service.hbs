@@ -1,0 +1,19 @@
+const express = require('express');
+
+module.exports = {
+  name: '{{dashCase name}}',
+  routes: {
+    'GET /': 'getIndex',
+  },
+  actions: {
+    getIndex: {
+      middleware: [express.json()],
+      params: {
+        $$strict: true,
+      },
+      async handler(req, res, next) {
+        res.json({ message: 'ok' });
+      },
+    },
+  },
+};

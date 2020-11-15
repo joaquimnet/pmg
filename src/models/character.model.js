@@ -1,7 +1,3 @@
-const { SchemaTypes } = require('mongoose');
-
-const entity = require('../entity');
-
 const IntergerStartingAtZero = {
   type: Number,
   get: (v) => Math.round(v),
@@ -12,11 +8,12 @@ const IntergerStartingAtZero = {
 
 module.exports = {
   name: 'character',
-  inherit: [entity.schema],
+  inherit: [require('./entity.model')],
   schema: {
     user: {
       type: String,
       index: true,
+      unique: true,
       required: true,
     },
     level: {
@@ -26,11 +23,10 @@ module.exports = {
     },
     money: IntergerStartingAtZero,
     titles: {
-      type: [SchemaTypes.ObjectId],
+      type: [{ type: String, ref: 'title' }],
     },
     activeTitle: {
-      type: SchemaTypes.ObjectId,
-      default: null,
+      type: { type: String, ref: 'title' },
     },
     adventure: {
       rank: {
@@ -40,8 +36,7 @@ module.exports = {
         default: 'F',
       },
       currentQuest: {
-        type: SchemaTypes.ObjectId,
-        default: null,
+        type: { type: String, ref: 'quest' },
       },
     },
     skill_mastery: {
@@ -123,43 +118,43 @@ module.exports = {
         blood: IntergerStartingAtZero,
       },
     },
-    character_skills: {
-      type: [SchemaTypes.ObjectId],
+    learned_character_skills: {
+      type: [{ type: String, ref: 'skill' }],
     },
     learned_spells: {
-      type: [SchemaTypes.ObjectId],
+      type: [{ type: String, ref: 'spell' }],
     },
     inventory: {
       head: {
-        type: SchemaTypes.ObjectId,
-        default: null,
+        type: String,
+        ref: 'itemstack',
       },
       chest: {
-        type: SchemaTypes.ObjectId,
-        default: null,
+        type: String,
+        ref: 'itemstack',
       },
       bottom: {
-        type: SchemaTypes.ObjectId,
-        default: null,
+        type: String,
+        ref: 'itemstack',
       },
       boots: {
-        type: SchemaTypes.ObjectId,
-        default: null,
+        type: String,
+        ref: 'itemstack',
       },
       gloves: {
-        type: SchemaTypes.ObjectId,
-        default: null,
+        type: String,
+        ref: 'itemstack',
       },
       weapon: {
-        type: SchemaTypes.ObjectId,
-        default: null,
+        type: String,
+        ref: 'itemstack',
       },
       offhand: {
-        type: SchemaTypes.ObjectId,
-        default: null,
+        type: String,
+        ref: 'itemstack',
       },
       bag: {
-        type: [SchemaTypes.ObjectId],
+        type: [{ type: String, ref: 'itemstack' }],
       },
     },
   },

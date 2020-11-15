@@ -1,5 +1,4 @@
-const mongoose = require('mongoose');
-const { Enum } = require('../../modules');
+const { Enum } = require('../modules');
 
 const EntityState = new Enum({
   ALIVE: 'ALIVE',
@@ -25,28 +24,34 @@ module.exports = {
     },
     HP: IntergerStartingAtZero,
     MP: IntergerStartingAtZero,
-    location: {
+    position: {
       region: {
-        type: mongoose.SchemaTypes.ObjectId,
-        default: null,
+        type: String,
+        ref: 'region',
       },
       X: {
         type: Number,
+        get: (v) => Math.round(v),
+        set: (v) => Math.round(v),
         required: true,
       },
       Y: {
         type: Number,
+        get: (v) => Math.round(v),
+        set: (v) => Math.round(v),
         required: true,
       },
       Z: {
         type: Number,
+        get: (v) => Math.round(v),
+        set: (v) => Math.round(v),
         required: true,
       },
     },
     state: {
       type: String,
       required: true,
-      enum: EntityState.toArray(),
+      enum: [...EntityState],
       default: EntityState.ALIVE,
     },
   },

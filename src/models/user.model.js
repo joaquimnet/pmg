@@ -1,6 +1,6 @@
 const { isEmail } = require('validator');
 
-const { Enum } = require('../../modules');
+const { Enum } = require('../modules');
 
 const Roles = new Enum({
   USER: 'USER',

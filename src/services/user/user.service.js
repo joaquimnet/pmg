@@ -20,8 +20,8 @@ module.exports = {
         if (!user) {
           return res.status(404).json({ message: 'User not found' });
         }
-        const characters = await Character.find({ user: user._id });
-        return res.json({ user: user.safe(), characters });
+        const character = await Character.find({ user: user._id }).populate('titles');
+        return res.json({ user: user.safe(), character });
       },
     },
   },
