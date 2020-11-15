@@ -1,4 +1,4 @@
-const { Achievement } = require('../../models');
+const { Achievement } = require('../../../models');
 
 module.exports = {
   name: 'achievement',

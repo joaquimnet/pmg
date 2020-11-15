@@ -1,15 +1,15 @@
-const { Skill } = require('../../models');
+const { Item } = require('../../../models');
 
 module.exports = {
-  name: 'skill',
+  name: 'item',
   routes: {
-    'GET /skill/:id': 'getSkill',
-    'POST /skill': 'postSkill',
-    'PATCH /skill/:id': 'patchSkill',
-    'DELETE /skill/:id': 'deleteSkill',
+    'GET /item/:id': 'getItem',
+    'POST /item': 'postItem',
+    'PATCH /item/:id': 'patchItem',
+    'DELETE /item/:id': 'deleteItem',
   },
   actions: {
-    getSkill: {
+    getItem: {
       params: {
         id: 'string',
         $$strict: true,
@@ -17,15 +17,15 @@ module.exports = {
       async handler(req, res) {
         const params = { ...req.body, ...req.query, ...req.params };
 
-        const skill = await Skill.findById(params.id);
-        if (!skill) {
-          return res.status(404).json({ message: 'Skill not found' });
+        const item = await Item.findById(params.id);
+        if (!item) {
+          return res.status(404).json({ message: 'Item not found' });
         }
 
-        return res.json(skill.safe());
+        return res.json(item.safe());
       },
     },
-    postSkill: {
+    postItem: {
       params: {
         name: { type: 'string', min: 2 },
         description: { type: 'string', min: 2 },
@@ -34,17 +34,17 @@ module.exports = {
       async handler(req, res) {
         const params = { ...req.body, ...req.query, ...req.params };
 
-        const skill = new Skill({
+        const item = new Item({
           name: params.name,
           description: params.description,
         });
 
-        await skill.save();
+        await item.save();
 
-        return res.json(skill.safe());
+        return res.json(item.safe());
       },
     },
-    patchSkill: {
+    patchItem: {
       params: {
         id: 'string',
         name: { type: 'string', min: 2, optional: true },
@@ -54,21 +54,21 @@ module.exports = {
       async handler(req, res) {
         const params = { ...req.body, ...req.query, ...req.params };
 
-        const skill = await Skill.findById(params.id);
-        if (!skill) {
-          return res.status(404).json({ message: 'Skill not found' });
+        const item = await Item.findById(params.id);
+        if (!item) {
+          return res.status(404).json({ message: 'Item not found' });
         }
 
         if (params.name || params.description) {
-          if (params.name) skill.name = params.name;
-          if (params.description) skill.description = params.description;
-          await skill.save();
+          if (params.name) item.name = params.name;
+          if (params.description) item.description = params.description;
+          await item.save();
         }
 
-        return res.json(skill.safe());
+        return res.json(item.safe());
       },
     },
-    deleteSkill: {
+    deleteItem: {
       params: {
         id: 'string',
         $$strict: true,
@@ -76,7 +76,7 @@ module.exports = {
       async handler(req, res) {
         const params = { ...req.body, ...req.query, ...req.params };
 
-        await Skill.deleteOne({ _id: params.id });
+        await Item.deleteOne({ _id: params.id });
 
         return res.status(204).end();
       },

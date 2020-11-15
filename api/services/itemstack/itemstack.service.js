@@ -1,4 +1,4 @@
-const { Itemstack } = require('../../models');
+const { Itemstack } = require('../../../models');
 
 module.exports = {
   name: 'itemstack',

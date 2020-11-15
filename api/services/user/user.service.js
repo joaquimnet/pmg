@@ -1,6 +1,6 @@
 const express = require('express');
 
-const { User, Character } = require('../../models');
+const { User, Character } = require('../../../models');
 
 module.exports = {
   name: 'user',

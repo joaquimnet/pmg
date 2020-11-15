@@ -1,4 +1,4 @@
-const terminate = (type, server, sessionStore) => {
+const terminate = ({ type, apiServer, gameServer, sessionStore } = {}) => {
   const exit = (code = 0) => {
     process.exit(code);
   };
@@ -8,8 +8,9 @@ const terminate = (type, server, sessionStore) => {
       return (err) => {
         console.log('An uncaught exception ocurred. Terminating...');
         console.log(err);
-        server?.close();
-        sessionStore.client?.close();
+        apiServer?.close();
+        gameServer?.close();
+        sessionStore?.client?.close();
         exit(1);
       };
     case 'rejection':
@@ -17,8 +18,9 @@ const terminate = (type, server, sessionStore) => {
         console.log('A promise rejected without a catch. Terminating...');
         console.log(reason);
         console.log(promise);
-        server?.close();
-        sessionStore.client?.close();
+        apiServer?.close();
+        gameServer?.close();
+        sessionStore?.client?.close();
         exit(1);
       };
     case 'db_failure':
@@ -30,8 +32,9 @@ const terminate = (type, server, sessionStore) => {
     default:
       return () => {
         console.log('Received signal to terminate. Exiting...');
-        server?.close();
-        sessionStore.client?.close();
+        apiServer?.close();
+        gameServer?.close();
+        sessionStore?.client?.close();
         exit(0);
       };
   }

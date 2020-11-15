@@ -1,15 +1,15 @@
-const { Spell } = require('../../models');
+const { Quest } = require('../../../models');
 
 module.exports = {
-  name: 'spell',
+  name: 'quest',
   routes: {
-    'GET /spell/:id': 'getSpell',
-    'POST /spell': 'postSpell',
-    'PATCH /spell/:id': 'patchSpell',
-    'DELETE /spell/:id': 'deleteSpell',
+    'GET /quest/:id': 'getQuest',
+    'POST /quest': 'postQuest',
+    'PATCH /quest/:id': 'patchQuest',
+    'DELETE /quest/:id': 'deleteQuest',
   },
   actions: {
-    getSpell: {
+    getQuest: {
       params: {
         id: 'string',
         $$strict: true,
@@ -17,15 +17,15 @@ module.exports = {
       async handler(req, res) {
         const params = { ...req.body, ...req.query, ...req.params };
 
-        const spell = await Spell.findById(params.id);
-        if (!spell) {
-          return res.status(404).json({ message: 'Spell not found' });
+        const quest = await Quest.findById(params.id);
+        if (!quest) {
+          return res.status(404).json({ message: 'Quest not found' });
         }
 
-        return res.json(spell.safe());
+        return res.json(quest.safe());
       },
     },
-    postSpell: {
+    postQuest: {
       params: {
         name: { type: 'string', min: 2 },
         description: { type: 'string', min: 2 },
@@ -34,17 +34,17 @@ module.exports = {
       async handler(req, res) {
         const params = { ...req.body, ...req.query, ...req.params };
 
-        const spell = new Spell({
+        const quest = new Quest({
           name: params.name,
           description: params.description,
         });
 
-        await spell.save();
+        await quest.save();
 
-        return res.json(spell.safe());
+        return res.json(quest.safe());
       },
     },
-    patchSpell: {
+    patchQuest: {
       params: {
         id: 'string',
         name: { type: 'string', min: 2, optional: true },
@@ -54,21 +54,21 @@ module.exports = {
       async handler(req, res) {
         const params = { ...req.body, ...req.query, ...req.params };
 
-        const spell = await Spell.findById(params.id);
-        if (!spell) {
-          return res.status(404).json({ message: 'Spell not found' });
+        const quest = await Quest.findById(params.id);
+        if (!quest) {
+          return res.status(404).json({ message: 'Quest not found' });
         }
 
         if (params.name || params.description) {
-          if (params.name) spell.name = params.name;
-          if (params.description) spell.description = params.description;
-          await spell.save();
+          if (params.name) quest.name = params.name;
+          if (params.description) quest.description = params.description;
+          await quest.save();
         }
 
-        return res.json(spell.safe());
+        return res.json(quest.safe());
       },
     },
-    deleteSpell: {
+    deleteQuest: {
       params: {
         id: 'string',
         $$strict: true,
@@ -76,7 +76,7 @@ module.exports = {
       async handler(req, res) {
         const params = { ...req.body, ...req.query, ...req.params };
 
-        await Spell.deleteOne({ _id: params.id });
+        await Quest.deleteOne({ _id: params.id });
 
         return res.status(204).end();
       },

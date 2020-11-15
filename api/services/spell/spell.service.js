@@ -1,15 +1,15 @@
-const { Item } = require('../../models');
+const { Spell } = require('../../../models');
 
 module.exports = {
-  name: 'item',
+  name: 'spell',
   routes: {
-    'GET /item/:id': 'getItem',
-    'POST /item': 'postItem',
-    'PATCH /item/:id': 'patchItem',
-    'DELETE /item/:id': 'deleteItem',
+    'GET /spell/:id': 'getSpell',
+    'POST /spell': 'postSpell',
+    'PATCH /spell/:id': 'patchSpell',
+    'DELETE /spell/:id': 'deleteSpell',
   },
   actions: {
-    getItem: {
+    getSpell: {
       params: {
         id: 'string',
         $$strict: true,
@@ -17,15 +17,15 @@ module.exports = {
       async handler(req, res) {
         const params = { ...req.body, ...req.query, ...req.params };
 
-        const item = await Item.findById(params.id);
-        if (!item) {
-          return res.status(404).json({ message: 'Item not found' });
+        const spell = await Spell.findById(params.id);
+        if (!spell) {
+          return res.status(404).json({ message: 'Spell not found' });
         }
 
-        return res.json(item.safe());
+        return res.json(spell.safe());
       },
     },
-    postItem: {
+    postSpell: {
       params: {
         name: { type: 'string', min: 2 },
         description: { type: 'string', min: 2 },
@@ -34,17 +34,17 @@ module.exports = {
       async handler(req, res) {
         const params = { ...req.body, ...req.query, ...req.params };
 
-        const item = new Item({
+        const spell = new Spell({
           name: params.name,
           description: params.description,
         });
 
-        await item.save();
+        await spell.save();
 
-        return res.json(item.safe());
+        return res.json(spell.safe());
       },
     },
-    patchItem: {
+    patchSpell: {
       params: {
         id: 'string',
         name: { type: 'string', min: 2, optional: true },
@@ -54,21 +54,21 @@ module.exports = {
       async handler(req, res) {
         const params = { ...req.body, ...req.query, ...req.params };
 
-        const item = await Item.findById(params.id);
-        if (!item) {
-          return res.status(404).json({ message: 'Item not found' });
+        const spell = await Spell.findById(params.id);
+        if (!spell) {
+          return res.status(404).json({ message: 'Spell not found' });
         }
 
         if (params.name || params.description) {
-          if (params.name) item.name = params.name;
-          if (params.description) item.description = params.description;
-          await item.save();
+          if (params.name) spell.name = params.name;
+          if (params.description) spell.description = params.description;
+          await spell.save();
         }
 
-        return res.json(item.safe());
+        return res.json(spell.safe());
       },
     },
-    deleteItem: {
+    deleteSpell: {
       params: {
         id: 'string',
         $$strict: true,
@@ -76,7 +76,7 @@ module.exports = {
       async handler(req, res) {
         const params = { ...req.body, ...req.query, ...req.params };
 
-        await Item.deleteOne({ _id: params.id });
+        await Spell.deleteOne({ _id: params.id });
 
         return res.status(204).end();
       },

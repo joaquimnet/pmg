@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const validator = require('validator');
 const rateLimiter = require('express-rate-limit');
 
-const { Discriminator, User } = require('../../models');
+const { Discriminator, User } = require('../../../models');
 
 module.exports = {
   name: 'auth',

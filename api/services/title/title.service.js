@@ -1,4 +1,4 @@
-const { Title } = require('../../models');
+const { Title } = require('../../../models');
 
 module.exports = {
   name: 'title',

@@ -1,7 +1,7 @@
 const WebSocket = require('ws');
 const { inspect } = require('util');
 
-const { sessionStoreMiddleware } = require('./config');
+const { sessionStoreMiddleware } = require('../config');
 
 const map = new Map();
 
