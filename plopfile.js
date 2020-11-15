@@ -7,25 +7,37 @@ module.exports = (plop) => {
         name: 'name',
         message: 'What would you like to name this model?',
       },
+      {
+        type: 'confirm',
+        name: 'rest',
+        message: 'Would you like to add a service with REST endpoints?',
+      },
     ],
-    actions: [
-      {
-        type: 'add',
-        templateFile: 'templates/model.hbs',
-        path: 'src/models/{{name}}.model.js',
-      },
-      {
-        type: 'add',
-        templateFile: 'templates/model-service.hbs',
-        path: 'src/services/{{dashCase name}}/{{name}}.service.js',
-      },
-      {
+    actions: (data) => {
+      const actions = [
+        {
+          type: 'add',
+          templateFile: 'templates/model.hbs',
+          path: 'src/models/{{name}}.model.js',
+        },
+      ];
+
+      if (data.rest) {
+        actions.push({
+          type: 'add',
+          templateFile: 'templates/model-service.hbs',
+          path: 'src/services/{{dashCase name}}/{{name}}.service.js',
+        });
+      }
+      actions.push({
         type: 'append',
         templateFile: 'templates/log.hbs',
         path: './plop.log',
         data: { time: new Date().toISOString(), generator: 'model' },
-      },
-    ],
+      });
+
+      return actions;
+    },
   });
 
   plop.setGenerator('service', {

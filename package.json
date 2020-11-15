@@ -23,7 +23,8 @@
     "morgan": "^1.10.0",
     "ponaserv": "github:joaquimnet/ponaserv",
     "tiny-env": "joaquimnet/tiny-env",
-    "validator": "^13.1.1"
+    "validator": "^13.1.1",
+    "ws": "^7.4.0"
   },
   "devDependencies": {
     "eslint": "^7.6.0",
