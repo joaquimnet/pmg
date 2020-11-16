@@ -2,8 +2,9 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const validator = require('validator');
 const rateLimiter = require('express-rate-limit');
+const uuid = require('uuid');
 
-const { Discriminator, User } = require('../../../models');
+const { Discriminator, User, GameToken } = require('../../../models');
 
 module.exports = {
   name: 'auth',
@@ -11,6 +12,7 @@ module.exports = {
     'POST /auth/login': 'postLogin',
     'POST /auth/logout': 'postLogout',
     'POST /auth/register': 'postRegister',
+    'POST /auth/token': 'gameLogin',
     'GET /auth/me': 'me',
   },
   actions: {
@@ -44,6 +46,37 @@ module.exports = {
 
         req.session.userId = user._id;
         return res.json(user.toObject({ versionKey: false }));
+      },
+    },
+    gameLogin: {
+      params: {
+        email: 'email',
+        password: 'string',
+        $$strict: true,
+      },
+      middleware: [express.json()],
+      async handler(req, res) {
+        const { email, password } = req.body;
+
+        const user = await User.findOne({ email }).exec();
+
+        if (!user) {
+          return res.status(401).json({ message: 'Invalid email or password.' });
+        }
+
+        const samePassword = await bcrypt.compare(password, user.password);
+
+        if (!samePassword) {
+          return res.status(401).json({ message: 'Invalid email or password.' });
+        }
+
+        await GameToken.deleteMany({ userId: user._id }).exec();
+
+        const gameToken = new GameToken({ userId: user._id, token: uuid.v4() });
+
+        await gameToken.save();
+
+        res.json({ token: gameToken.token });
       },
     },
     postLogout: {

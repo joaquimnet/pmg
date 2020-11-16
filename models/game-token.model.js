@@ -1,19 +1,21 @@
 module.exports = {
-  name: '{{dashCase name}}',
+  name: 'game-token',
   schema: {
-    name: {
+    userId: {
       type: String,
       required: true,
+      ref: 'user',
     },
-    description: {
+    token: {
       type: String,
+      index: true,
       required: true,
     },
   },
   methods: {
     safe() {
-      const {{camelCase name}} = this.toObject();
-      return {{camelCase name}};
+      const gameToken = this.toObject();
+      return gameToken;
     },
   },
 };

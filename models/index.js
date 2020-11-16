@@ -45,13 +45,23 @@ function buildModel(modelObj) {
   return model(modelObj.name, schema);
 }
 
+function toTitleCase(str) {
+  return str
+    .trim()
+    .replace(/[\W]/g, ' ')
+    .replace(/\w\S*/g, function (txt) {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    })
+    .replace(/\s/g, '');
+}
+
 const files = fs.readdirSync(__dirname, 'utf-8').filter((p) => p.match(/.model.js$/));
 
 const models = {};
 
 for (let file of files) {
   const model = require('./' + file.replace(/.js$/, ''));
-  models[model.name[0].toUpperCase() + model.name.substr(1)] = buildModel(model);
+  models[toTitleCase(model.name)] = buildModel(model);
 }
 
 module.exports = models;

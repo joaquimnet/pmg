@@ -1,27 +1,30 @@
 const WebSocket = require('ws');
 const { inspect } = require('util');
 
-const { sessionStoreMiddleware } = require('../config');
+const authorize = require('./authorize');
+const parseSocketMessage = require('./parseSocketMessage');
 
 const map = new Map();
 
 const wss = new WebSocket.Server({ clientTracking: false, noServer: true });
 
 wss.on('connection', function (ws, request) {
-  const userId = request.session.userId;
+  const userId = ws.game.userId;
 
   map.set(userId, ws);
 
+  ws.send('welcome');
+
   ws.on('message', function (message) {
-    console.log('Channel:', message[0]);
-    console.log('Message:', message[2]);
-    const payload = String(message.slice(4).filter(Boolean)).trim();
-    console.log('JSON Payload:', payload);
-    console.log('Parsed Payload', JSON.parse(payload));
-    //
-    // Here we can now use session parameters.
-    //
-    console.log(`Received message ${message} from user ${userId}`);
+    const msg = parseSocketMessage(message);
+    if (!msg) {
+      console.error('Malformed payload sent by userId', userId);
+      return;
+    }
+    console.log('userId: ', userId);
+    console.log('Channel:', msg.channel);
+    console.log('Message:', msg.message);
+    console.log('JSON', msg.json);
   });
 
   ws.on('close', function () {
@@ -31,22 +34,25 @@ wss.on('connection', function (ws, request) {
 
 module.exports = (server) => {
   server.on('upgrade', function (request, socket, head) {
-    console.log('Parsing session from request...');
+    authorize(request)
+      .then((userId) => {
+        if (!userId) {
+          socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
+          socket.destroy();
+          return;
+        }
 
-    sessionStoreMiddleware(request, {}, () => {
-      // if (!request.session.userId) {
-      //   console.log('No userId found in: ', request.session);
-      //   socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
-      //   socket.destroy();
-      //   return;
-      // }
-
-      console.log('Session is parsed!');
-
-      wss.handleUpgrade(request, socket, head, function (ws) {
-        wss.emit('connection', ws, request);
+        wss.handleUpgrade(request, socket, head, function (ws) {
+          ws.game = { userId };
+          wss.emit('connection', ws, request);
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+        socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
+        socket.destroy();
+        return;
       });
-    });
   });
 
   return wss;

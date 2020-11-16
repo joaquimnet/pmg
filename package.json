@@ -23,6 +23,7 @@
     "morgan": "^1.10.0",
     "ponaserv": "github:joaquimnet/ponaserv",
     "tiny-env": "joaquimnet/tiny-env",
+    "uuid": "^8.3.1",
     "validator": "^13.1.1",
     "ws": "^7.4.0"
   },

@@ -18,7 +18,7 @@ module.exports = (plop) => {
         {
           type: 'add',
           templateFile: 'templates/model.hbs',
-          path: 'src/models/{{name}}.model.js',
+          path: 'models/{{dashCase name}}.model.js',
         },
       ];
 
@@ -26,7 +26,7 @@ module.exports = (plop) => {
         actions.push({
           type: 'add',
           templateFile: 'templates/model-service.hbs',
-          path: 'src/services/{{dashCase name}}/{{name}}.service.js',
+          path: 'services/{{dashCase name}}/{{dashCase name}}.service.js',
         });
       }
       actions.push({
@@ -49,7 +49,7 @@ module.exports = (plop) => {
       {
         type: 'add',
         templateFile: 'templates/empty-service.hbs',
-        path: 'src/services/{{dashCase name}}/{{dashCase name}}.service.js',
+        path: 'services/{{dashCase name}}/{{dashCase name}}.service.js',
         skipIfExists: true,
       },
       {
