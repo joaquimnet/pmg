@@ -7,7 +7,7 @@ require('tiny-env')();
 const { useTerminate, sessionStore, connect } = require('./config');
 
 const createApiServer = require('./api/api');
-const createGameServer = require('./game/game-server');
+const GameServer = require('./game/game-server');
 
 connect()
   .then(() => {
@@ -16,7 +16,7 @@ connect()
   .catch(useTerminate({ type: 'db_failure' }));
 
 const apiServer = createApiServer();
-const gameServer = createGameServer(apiServer);
+const gameServer = new GameServer(apiServer);
 
 process.on('SIGINT', useTerminate());
 process.on('SIGTERM', useTerminate());

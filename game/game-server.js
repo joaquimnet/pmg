@@ -1,40 +1,20 @@
 const WebSocket = require('ws');
-const { inspect } = require('util');
+const url = require('url');
+const querystring = require('querystring');
 
-const authorize = require('./authorize');
-const parseSocketMessage = require('./parseSocketMessage');
+const { GameToken } = require('../models');
 
-const map = new Map();
+class GameServer {
+  constructor(apiServer) {
+    this.wss = new WebSocket.Server({ clientTracking: false, noServer: true });
+    this.users = new Map();
 
-const wss = new WebSocket.Server({ clientTracking: false, noServer: true });
+    apiServer.on('upgrade', this.onHttpUpgrade.bind(this));
+    this.wss.on('connection', this.onConnection.bind(this));
+  }
 
-wss.on('connection', function (ws, request) {
-  const userId = ws.game.userId;
-
-  map.set(userId, ws);
-
-  ws.send('welcome');
-
-  ws.on('message', function (message) {
-    const msg = parseSocketMessage(message);
-    if (!msg) {
-      console.error('Malformed payload sent by userId', userId);
-      return;
-    }
-    console.log('userId: ', userId);
-    console.log('Channel:', msg.channel);
-    console.log('Message:', msg.message);
-    console.log('JSON', msg.json);
-  });
-
-  ws.on('close', function () {
-    map.delete(userId);
-  });
-});
-
-module.exports = (server) => {
-  server.on('upgrade', function (request, socket, head) {
-    authorize(request)
+  onHttpUpgrade(request, socket, head) {
+    this.authorize(request)
       .then((userId) => {
         if (!userId) {
           socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
@@ -42,9 +22,9 @@ module.exports = (server) => {
           return;
         }
 
-        wss.handleUpgrade(request, socket, head, function (ws) {
+        this.wss.handleUpgrade(request, socket, head, (ws) => {
           ws.game = { userId };
-          wss.emit('connection', ws, request);
+          this.wss.emit('connection', ws, request);
         });
       })
       .catch((err) => {
@@ -53,7 +33,100 @@ module.exports = (server) => {
         socket.destroy();
         return;
       });
-  });
+  }
 
-  return wss;
-};
+  onConnection(ws, request) {
+    const userId = ws.game.userId;
+    this.users.set(userId, ws);
+    ws.on('message', (message) =>
+      this.onMessage.bind(this, { ...(this.decode(message) ?? {}), userId })(),
+    );
+    ws.on('close', this.logout.bind(this, userId));
+  }
+
+  onMessage(msg) {
+    if (!msg?.message) {
+      console.error('Malformed payload sent by userId', msg.userId);
+      return;
+    }
+    console.log('userId: ', msg.userId);
+    console.log('Channel:', msg.channel);
+    console.log('Message:', msg.message);
+    console.log('Protocol', msg.protocol);
+    console.log('JSON', msg.json);
+    console.log('JSON Valid:', msg.protocol.validate(msg.json));
+  }
+
+  close() {
+    this.wss.close();
+  }
+
+  async authorize(req) {
+    const params = querystring.parse(url.parse(req.url).query);
+
+    const twoHoursAgo = new Date();
+    twoHoursAgo.setHours(twoHoursAgo.getHours() - 2);
+
+    const gameToken = await GameToken.findOne({ token: params.token });
+
+    if (!gameToken || gameToken.createdAt.getTime() <= twoHoursAgo.getTime()) {
+      return false;
+    }
+
+    return gameToken.userId;
+  }
+
+  async logout(userId) {
+    this.users.delete(userId);
+    const twoHoursAgo = new Date();
+    twoHoursAgo.setHours(twoHoursAgo.getHours() - 2);
+    await GameToken.deleteMany({ userId, createdAt: { $lte: twoHoursAgo } }).exec();
+  }
+
+  encode(channel = 0, message = 0, payload) {
+    const str = JSON.stringify(payload);
+
+    const codes = str.split('').map((a) => a.charCodeAt(0));
+
+    const arr = new Uint16Array(str.length + 2);
+
+    arr[0] = channel;
+    arr[1] = message;
+
+    codes.forEach((c, i) => (arr[i + 2] = c));
+
+    return arr;
+  }
+
+  decode(payload) {
+    const channel = payload[0];
+    const message = payload[2];
+    const protocol = [...protocolMessages.values()].find((msg) => msg.id === message);
+  
+    if (!protocol) {
+      return null;
+    }
+  
+    if (!Buffer.isBuffer(payload)) {
+      return null;
+    }
+  
+    try {
+      const json = JSON.parse(String(payload.slice(4).filter(Boolean)).trim());
+      if (!(typeof channel === 'number') || !(typeof message === 'number')) {
+        return null;
+      }
+      return { channel, message, json, protocol };
+    } catch (err) {
+      console.log(err);
+      return null;
+    }
+  }
+}
+
+module.exports = GameServer;
+
+// Class ideas
+// GameServer
+// ClientConnection
+// Protocol

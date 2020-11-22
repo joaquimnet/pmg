@@ -60,4 +60,23 @@ module.exports = (plop) => {
       },
     ],
   });
+
+  plop.setGenerator('protocol', {
+    description: 'Adds a new game message in the protocol folder.',
+    prompts: [{ type: 'input', name: 'name', message: 'What would you like to name the message?' }],
+    actions: [
+      {
+        type: 'add',
+        templateFile: 'templates/protocol.hbs',
+        path: 'game/protocol/{{constantCase name}}.js',
+        skipIfExists: true,
+      },
+      {
+        type: 'append',
+        templateFile: 'templates/log.hbs',
+        path: './plop.log',
+        data: { time: new Date().toISOString(), generator: 'protocol' },
+      },
+    ],
+  });
 };

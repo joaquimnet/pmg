@@ -10,3 +10,9 @@
 2020-11-15T13:41:41.928Z model - parcel  
 2020-11-15T21:44:59.154Z model - game token  
 2020-11-15T21:47:42.387Z model - game token  
+2020-11-16T21:06:09.995Z protocol - HANDSHAKE  
+2020-11-16T21:06:21.721Z protocol - REQUEST_ACCOUNT_INFO  
+2020-11-16T21:06:45.456Z protocol - HANDSHAKE  
+2020-11-16T21:07:02.135Z protocol - REQUEST_ACCOUNT_INFO  
+2020-11-16T21:09:53.158Z protocol - request parcel messages  
+2020-11-21T17:14:07.171Z protocol - C_ACCOUNT_INFO  
