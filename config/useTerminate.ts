@@ -1,4 +1,22 @@
-const terminate = ({ type, apiServer, gameServer, sessionStore } = {}) => {
+import { Server } from 'http';
+import { GameServer } from '../game/GameServer';
+
+export interface ITerminateOptions {
+  type?: string;
+  apiServer?: Server;
+  gameServer?: GameServer;
+  sessionStore?: any;
+}
+
+type SIGHandler = (...args: any[]) => void;
+type CatchHandler = (reason: any) => PromiseLike<never>;
+
+export const useTerminate = ({
+  type,
+  apiServer,
+  gameServer,
+  sessionStore,
+}: ITerminateOptions = {}): SIGHandler | CatchHandler => {
   const exit = (code = 0) => {
     process.exit(code);
   };
@@ -39,5 +57,3 @@ const terminate = ({ type, apiServer, gameServer, sessionStore } = {}) => {
       };
   }
 };
-
-module.exports = terminate;

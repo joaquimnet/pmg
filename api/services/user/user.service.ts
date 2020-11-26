@@ -1,8 +1,9 @@
-const express = require('express');
+import express from 'express';
 
-const { User, Character } = require('../../../models');
+import { User, Character } from '../../../models';
+import { IPonaservService } from '../../interfaces';
 
-module.exports = {
+const service: IPonaservService = {
   name: 'user',
   routes: {
     'GET /user/profile/:id': 'getProfile',
@@ -14,7 +15,7 @@ module.exports = {
         $$strict: true,
       },
       middleware: [express.json()],
-      async handler(req, res) {
+      async handler(req, res): Promise<any> {
         const params = { ...req.body, ...req.query, ...req.params };
         const user = await User.findById(params.id).populate('achievements');
         if (!user) {
@@ -27,3 +28,5 @@ module.exports = {
   },
   methods: {},
 };
+
+export default service;

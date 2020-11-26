@@ -51,7 +51,7 @@ module.exports = {
   },
   methods: {
     safe() {
-      const user = this.toObject();
+      const user = this.toObject({ versionKey: false });
       delete user.password;
       return user;
     },

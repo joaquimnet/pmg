@@ -3,11 +3,13 @@
  * 08-10-2020
  * Joaquim Neto
  */
-require('tiny-env')();
-const { useTerminate, sessionStore, connect } = require('./config');
+console.log('--- Perfect Middle Ground ---');
+import env from 'tiny-env';
+env();
 
-const createApiServer = require('./api/api');
-const GameServer = require('./game/game-server');
+import { useTerminate, sessionStore, connect } from './config';
+import { Api } from './api/api';
+import { GameServer } from './game/GameServer';
 
 connect()
   .then(() => {
@@ -15,7 +17,7 @@ connect()
   })
   .catch(useTerminate({ type: 'db_failure' }));
 
-const apiServer = createApiServer();
+const apiServer = Api();
 const gameServer = new GameServer(apiServer);
 
 process.on('SIGINT', useTerminate());

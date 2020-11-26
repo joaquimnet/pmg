@@ -1,7 +1,7 @@
 import { EmptyParams, IPacket } from '../interfaces';
 
-const packet: IPacket<EmptyParams> = {
-  name: '{{constantCase name}}',
+const message: IPacket<EmptyParams> = {
+  name: 'S_REQUEST_PARCEL_MESSAGES',
   version: 1,
   params: {
     $$strict: true,
@@ -11,4 +11,4 @@ const packet: IPacket<EmptyParams> = {
   },
 };
 
-export default packet;
+export default message;

@@ -68,7 +68,7 @@ module.exports = (plop) => {
       {
         type: 'add',
         templateFile: 'templates/protocol.hbs',
-        path: 'game/protocol/{{constantCase name}}.js',
+        path: 'game/packets/{{constantCase name}}.ts',
         skipIfExists: true,
       },
       {

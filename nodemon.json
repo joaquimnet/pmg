@@ -1,0 +1,11 @@
+{
+  "env": {
+    "verbose": true,
+    "NODE_ENV": "development"
+  },
+  "watch": [
+    "."
+  ],
+  "ext": "js,ts",
+  "exec": "yarn start"
+}
