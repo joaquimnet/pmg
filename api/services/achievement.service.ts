@@ -1,6 +1,7 @@
-const { Achievement } = require('../../../models');
+import { IPonaservService } from '../interfaces';
+import { Achievement } from '../../models';
 
-module.exports = {
+const service: IPonaservService = {
   name: 'achievement',
   routes: {
     'GET /achievement/:id': 'getAchievement',
@@ -14,7 +15,7 @@ module.exports = {
         id: 'string',
         $$strict: true,
       },
-      async handler(req, res) {
+      async handler(req, res): Promise<any> {
         const params = { ...req.body, ...req.query, ...req.params };
 
         const achievement = await Achievement.findById(params.id);
@@ -32,7 +33,7 @@ module.exports = {
         category: { type: 'string', min: 2 },
         $$strict: true,
       },
-      async handler(req, res) {
+      async handler(req, res): Promise<any> {
         const params = { ...req.body, ...req.query, ...req.params };
 
         const achievement = new Achievement({
@@ -54,7 +55,7 @@ module.exports = {
         category: { type: 'string', min: 2, optional: true },
         $$strict: true,
       },
-      async handler(req, res) {
+      async handler(req, res): Promise<any> {
         const params = { ...req.body, ...req.query, ...req.params };
 
         const achievement = await Achievement.findById(params.id);
@@ -77,7 +78,7 @@ module.exports = {
         id: 'string',
         $$strict: true,
       },
-      async handler(req, res) {
+      async handler(req, res): Promise<any> {
         const params = { ...req.body, ...req.query, ...req.params };
 
         await Achievement.deleteOne({ _id: params.id });
@@ -87,3 +88,5 @@ module.exports = {
     },
   },
 };
+
+export default service;

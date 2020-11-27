@@ -1,6 +1,7 @@
-const { Spell } = require('../../../models');
+import { IPonaservService } from '../interfaces';
+import { Spell } from '../../models';
 
-module.exports = {
+const service: IPonaservService = {
   name: 'spell',
   routes: {
     'GET /spell/:id': 'getSpell',
@@ -14,7 +15,7 @@ module.exports = {
         id: 'string',
         $$strict: true,
       },
-      async handler(req, res) {
+      async handler(req, res): Promise<any> {
         const params = { ...req.body, ...req.query, ...req.params };
 
         const spell = await Spell.findById(params.id);
@@ -29,15 +30,13 @@ module.exports = {
       params: {
         name: { type: 'string', min: 2 },
         description: { type: 'string', min: 2 },
+        category: { type: 'string', min: 2 },
         $$strict: true,
       },
-      async handler(req, res) {
+      async handler(req, res): Promise<any> {
         const params = { ...req.body, ...req.query, ...req.params };
 
-        const spell = new Spell({
-          name: params.name,
-          description: params.description,
-        });
+        const spell = new Spell(params);
 
         await spell.save();
 
@@ -49,9 +48,10 @@ module.exports = {
         id: 'string',
         name: { type: 'string', min: 2, optional: true },
         description: { type: 'string', min: 2, optional: true },
+        category: { type: 'string', min: 2, optional: true },
         $$strict: true,
       },
-      async handler(req, res) {
+      async handler(req, res): Promise<any> {
         const params = { ...req.body, ...req.query, ...req.params };
 
         const spell = await Spell.findById(params.id);
@@ -59,9 +59,10 @@ module.exports = {
           return res.status(404).json({ message: 'Spell not found' });
         }
 
-        if (params.name || params.description) {
+        if (params.name || params.description || params.category) {
           if (params.name) spell.name = params.name;
           if (params.description) spell.description = params.description;
+          if (params.category) spell.category = params.category;
           await spell.save();
         }
 
@@ -73,7 +74,7 @@ module.exports = {
         id: 'string',
         $$strict: true,
       },
-      async handler(req, res) {
+      async handler(req, res): Promise<any> {
         const params = { ...req.body, ...req.query, ...req.params };
 
         await Spell.deleteOne({ _id: params.id });
@@ -83,3 +84,5 @@ module.exports = {
     },
   },
 };
+
+export default service;

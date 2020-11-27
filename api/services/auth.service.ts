@@ -1,12 +1,13 @@
-const express = require('express');
-const bcrypt = require('bcrypt');
-const validator = require('validator');
-const rateLimiter = require('express-rate-limit');
-const uuid = require('uuid');
+import express from 'express';
+import bcrypt from 'bcrypt';
+import validator from 'validator';
+import rateLimiter from 'express-rate-limit';
+import uuid from 'uuid';
 
-const { Discriminator, User, GameToken } = require('../../../models');
+import { Discriminator, User, GameToken } from '../../models';
+import { IPonaservService, IPonaservVirtualService } from '../interfaces';
 
-module.exports = {
+const service: IPonaservService = {
   name: 'auth',
   routes: {
     'POST /auth/login': 'postLogin',
@@ -18,7 +19,7 @@ module.exports = {
   actions: {
     me: {
       middleware: [express.json()],
-      async handler(req, res) {
+      async handler(req, res): Promise<any> {
         return res.json(req.session.user);
       },
     },
@@ -29,7 +30,7 @@ module.exports = {
         $$strict: true,
       },
       middleware: [express.json()],
-      async handler(req, res) {
+      async handler(req, res): Promise<any> {
         const { email, password } = req.body;
 
         const user = await User.findOne({ email }).exec();
@@ -55,7 +56,7 @@ module.exports = {
         $$strict: true,
       },
       middleware: [express.json()],
-      async handler(req, res) {
+      async handler(req, res): Promise<any> {
         const { email, password } = req.body;
 
         const user = await User.findOne({ email }).exec();
@@ -81,8 +82,8 @@ module.exports = {
     },
     postLogout: {
       middleware: [express.json()],
-      async handler(req, res) {
-        req.session.destroy();
+      async handler(req, res): Promise<any> {
+        req.session.destroy(req.sessionID);
         return res.status(204).end();
       },
     },
@@ -110,7 +111,7 @@ module.exports = {
         },
         $$strict: true,
       },
-      async handler(req, res) {
+      async handler(req, res): Promise<any> {
         const params = { ...req.body, ...req.query };
 
         const email = params.email.trim();
@@ -135,7 +136,7 @@ module.exports = {
           return res.status(400).json({ message: 'This email address is already in use' });
         }
 
-        const hash = await this.hashPassword(password);
+        const hash: string = await (this as any).hashPassword(password);
 
         const discriminator = await Discriminator.determine(username);
 
@@ -160,10 +161,12 @@ module.exports = {
     },
   },
   methods: {
-    async hashPassword(password) {
+    async hashPassword(password: string): Promise<string> {
       const salt = await bcrypt.genSalt(10);
       const hash = await bcrypt.hash(password, salt);
       return hash;
     },
   },
 };
+
+export default service;

@@ -1,6 +1,7 @@
-const { {{properCase name}} } = require('../../models');
+import { IPonaservService } from '../interfaces';
+import { {{properCase name}} } from '../../models';
 
-module.exports = {
+const service: IPonaservService = {
   name: '{{dashCase name}}',
   routes: {
     'GET /{{dashCase name}}/:id': 'get{{properCase name}}',
@@ -14,15 +15,15 @@ module.exports = {
         id: 'string',
         $$strict: true,
       },
-      async handler(req, res) {
+      async handler(req, res): Promise<any> {
         const params = { ...req.body, ...req.query, ...req.params };
 
-        const {{camelCase name}} = await {{properCase name}}.findById(params.id);
-        if (!{{camelCase name}}) {
+        const {{dashCase name}} = await {{properCase name}}.findById(params.id);
+        if (!{{dashCase name}}) {
           return res.status(404).json({ message: '{{properCase name}} not found' });
         }
 
-        return res.json({{camelCase name}}.safe());
+        return res.json({{dashCase name}}.safe());
       },
     },
     post{{properCase name}}: {
@@ -31,17 +32,17 @@ module.exports = {
         description: { type: 'string', min: 2 },
         $$strict: true,
       },
-      async handler(req, res) {
+      async handler(req, res): Promise<any> {
         const params = { ...req.body, ...req.query, ...req.params };
 
-        const {{camelCase name}} = new {{properCase name}}({
+        const {{dashCase name}} = new {{properCase name}}({
           name: params.name,
           description: params.description,
         });
 
-        await {{camelCase name}}.save();
+        await {{dashCase name}}.save();
 
-        return res.json({{camelCase name}}.safe());
+        return res.json({{dashCase name}}.safe());
       },
     },
     patch{{properCase name}}: {
@@ -51,21 +52,21 @@ module.exports = {
         description: { type: 'string', min: 2, optional: true },
         $$strict: true,
       },
-      async handler(req, res) {
+      async handler(req, res): Promise<any> {
         const params = { ...req.body, ...req.query, ...req.params };
 
-        const {{camelCase name}} = await {{properCase name}}.findById(params.id);
-        if (!{{camelCase name}}) {
+        const {{dashCase name}} = await {{properCase name}}.findById(params.id);
+        if (!{{dashCase name}}) {
           return res.status(404).json({ message: '{{properCase name}} not found' });
         }
 
         if (params.name || params.description) {
-          if (params.name) {{camelCase name}}.name = params.name;
-          if (params.description) {{camelCase name}}.description = params.description;
-          await {{camelCase name}}.save();
+          if (params.name) {{dashCase name}}.name = params.name;
+          if (params.description) {{dashCase name}}.description = params.description;
+          await {{dashCase name}}.save();
         }
 
-        return res.json({{camelCase name}}.safe());
+        return res.json({{dashCase name}}.safe());
       },
     },
     delete{{properCase name}}: {
@@ -73,7 +74,7 @@ module.exports = {
         id: 'string',
         $$strict: true,
       },
-      async handler(req, res) {
+      async handler(req, res): Promise<any> {
         const params = { ...req.body, ...req.query, ...req.params };
 
         await {{properCase name}}.deleteOne({ _id: params.id });
@@ -83,3 +84,5 @@ module.exports = {
     },
   },
 };
+
+export default service;

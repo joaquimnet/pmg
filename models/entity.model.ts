@@ -1,4 +1,4 @@
-const { Enum } = require('../modules');
+import { Enum } from '../modules';
 
 const EntityState = new Enum({
   ALIVE: 'ALIVE',
@@ -52,7 +52,7 @@ module.exports = {
       type: String,
       required: true,
       enum: [...EntityState],
-      default: EntityState.ALIVE,
+      default: EntityState['ALIVE'],
     },
   },
 };

@@ -1,12 +1,10 @@
 import WebSocket from 'ws';
 import FastestValidator from 'fastest-validator';
-import fs from 'fs';
 import { join } from 'path';
 
 import { readDirectory } from '../modules/FileLoader';
 import { GameServer } from './GameServer';
 import { IPacket } from './interfaces';
-import { pathToFileURL } from 'url';
 
 const check = Symbol('check');
 

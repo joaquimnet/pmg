@@ -1,7 +1,7 @@
 import express from 'express';
 
-import { User, Character } from '../../../models';
-import { IPonaservService } from '../../interfaces';
+import { IPonaservService } from '../interfaces';
+import { User, Character } from '../../models';
 
 const service: IPonaservService = {
   name: 'user',

@@ -1,6 +1,7 @@
-const { Item } = require('../../../models');
+import { IPonaservService } from '../interfaces';
+import { Item } from '../../models';
 
-module.exports = {
+const service: IPonaservService = {
   name: 'item',
   routes: {
     'GET /item/:id': 'getItem',
@@ -14,7 +15,7 @@ module.exports = {
         id: 'string',
         $$strict: true,
       },
-      async handler(req, res) {
+      async handler(req, res): Promise<any> {
         const params = { ...req.body, ...req.query, ...req.params };
 
         const item = await Item.findById(params.id);
@@ -31,7 +32,7 @@ module.exports = {
         description: { type: 'string', min: 2 },
         $$strict: true,
       },
-      async handler(req, res) {
+      async handler(req, res): Promise<any> {
         const params = { ...req.body, ...req.query, ...req.params };
 
         const item = new Item({
@@ -51,7 +52,7 @@ module.exports = {
         description: { type: 'string', min: 2, optional: true },
         $$strict: true,
       },
-      async handler(req, res) {
+      async handler(req, res): Promise<any> {
         const params = { ...req.body, ...req.query, ...req.params };
 
         const item = await Item.findById(params.id);
@@ -73,7 +74,7 @@ module.exports = {
         id: 'string',
         $$strict: true,
       },
-      async handler(req, res) {
+      async handler(req, res): Promise<any> {
         const params = { ...req.body, ...req.query, ...req.params };
 
         await Item.deleteOne({ _id: params.id });
@@ -83,3 +84,5 @@ module.exports = {
     },
   },
 };
+
+export default service;

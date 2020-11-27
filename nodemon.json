@@ -7,5 +7,5 @@
     "."
   ],
   "ext": "js,ts",
-  "exec": "yarn start"
+  "exec": "./node_modules/.bin/ts-node --transpile-only index.ts"
 }

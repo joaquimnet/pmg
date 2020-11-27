@@ -1,15 +1,17 @@
-const { Schema, model } = require('mongoose');
-const FlakeId = require('flake-idgen');
-const format = require('biguint-format');
-const merge = require('deepmerge');
-const fs = require('fs');
+import { readDirectory } from '../modules/FileLoader';
+
+import { Schema, model, SchemaDefinition, Model } from 'mongoose';
+import FlakeId from 'flake-idgen';
+import format from 'biguint-format';
+import merge from 'deepmerge';
+import { PMGModel } from './interfaces';
 
 const flakeIdGen = new FlakeId({ epoch: (2020 - 1970) * 31536000 * 1000 });
 
-function buildModel(modelObj) {
-  let modelSchema;
+function buildModel(modelObj: PMGModel) {
+  let modelSchema: SchemaDefinition;
   if (modelObj.inherit && Array.isArray(modelObj.inherit)) {
-    modelSchema = merge(
+    modelSchema = (merge as any)(
       ...modelObj.inherit.map((inherit) => inherit.schema ?? inherit),
       modelObj.schema,
     );
@@ -31,13 +33,13 @@ function buildModel(modelObj) {
   const schema = new Schema(modelSchema, { timestamps: true });
 
   if (modelObj.statics) {
-    for (let funcName of Object.keys(modelObj.statics)) {
+    for (const funcName of Object.keys(modelObj.statics)) {
       schema.statics[funcName] = modelObj.statics[funcName];
     }
   }
 
   if (modelObj.methods) {
-    for (let funcName of Object.keys(modelObj.methods)) {
+    for (const funcName of Object.keys(modelObj.methods)) {
       schema.methods[funcName] = modelObj.methods[funcName];
     }
   }
@@ -55,13 +57,18 @@ function toTitleCase(str) {
     .replace(/\s/g, '');
 }
 
-const files = fs.readdirSync(__dirname, 'utf-8').filter((p) => p.match(/.model.js$/));
+const files = readDirectory({
+  dir: __dirname,
+  debug: true,
+  useTypescript: true,
+  ignorePattern: '!*.model.[tj]s',
+});
 
-const models = {};
+const models = new Map<string, typeof Model>();
 
-for (let file of files) {
-  const model = require('./' + file.replace(/.js$/, ''));
-  models[toTitleCase(model.name)] = buildModel(model);
+for (const file of files) {
+  const required = module.require(file.replace(/.(t|j)s$/, ''));
+  models.set(toTitleCase(required.name), buildModel(required.default ?? required));
 }
 
-module.exports = models;
+export default models;

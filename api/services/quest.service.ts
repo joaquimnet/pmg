@@ -1,6 +1,7 @@
-const { Quest } = require('../../../models');
+import { IPonaservService } from '../interfaces';
+import { Quest } from '../../models';
 
-module.exports = {
+const service: IPonaservService = {
   name: 'quest',
   routes: {
     'GET /quest/:id': 'getQuest',
@@ -14,7 +15,7 @@ module.exports = {
         id: 'string',
         $$strict: true,
       },
-      async handler(req, res) {
+      async handler(req, res): Promise<any> {
         const params = { ...req.body, ...req.query, ...req.params };
 
         const quest = await Quest.findById(params.id);
@@ -31,7 +32,7 @@ module.exports = {
         description: { type: 'string', min: 2 },
         $$strict: true,
       },
-      async handler(req, res) {
+      async handler(req, res): Promise<any> {
         const params = { ...req.body, ...req.query, ...req.params };
 
         const quest = new Quest({
@@ -51,7 +52,7 @@ module.exports = {
         description: { type: 'string', min: 2, optional: true },
         $$strict: true,
       },
-      async handler(req, res) {
+      async handler(req, res): Promise<any> {
         const params = { ...req.body, ...req.query, ...req.params };
 
         const quest = await Quest.findById(params.id);
@@ -73,7 +74,7 @@ module.exports = {
         id: 'string',
         $$strict: true,
       },
-      async handler(req, res) {
+      async handler(req, res): Promise<any> {
         const params = { ...req.body, ...req.query, ...req.params };
 
         await Quest.deleteOne({ _id: params.id });
@@ -83,3 +84,5 @@ module.exports = {
     },
   },
 };
+
+export default service;

@@ -2,9 +2,11 @@ import url from 'url';
 import querystring from 'querystring';
 import { IncomingMessage } from 'http';
 
-import { GameToken } from '../models';
+import Models from '../models';
 import { GameServer, IWebSocketGame } from './GameServer';
 import { IDecodedPacket } from './Protocol';
+
+const GameToken = Models.get('GameToken')!;
 
 export class ClientConnection {
   game: GameServer;

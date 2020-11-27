@@ -1,6 +1,8 @@
 import { EmptyParams, IPacket } from '../interfaces';
-import { User } from '../../models';
+import Models from '../../models';
 import { Params } from './C_ACCOUNT_INFO';
+
+const User = Models.get('User')!;
 
 const message: IPacket<EmptyParams> = {
   name: 'S_REQUEST_ACCOUNT_INFO',

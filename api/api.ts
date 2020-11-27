@@ -19,7 +19,7 @@ app.use(express.static(path.join(__dirname, 'static')));
 
 ponaserv(app, {
   services: path.join(__dirname, './services'),
-  debug: true,
+  // debug: true,
 });
 
 export function Api(): Server {

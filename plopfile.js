@@ -26,7 +26,7 @@ module.exports = (plop) => {
         actions.push({
           type: 'add',
           templateFile: 'templates/model-service.hbs',
-          path: 'services/{{dashCase name}}/{{dashCase name}}.service.js',
+          path: 'services/{{dashCase name}}.service.ts',
         });
       }
       actions.push({
